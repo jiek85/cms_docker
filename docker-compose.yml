@@ -6,7 +6,7 @@ services:
     image: mysql
     environment:
       # - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_ROOT_PASSWORD=slky@147
+      - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_ROOT_HOST=%
       - MYSQL_USER=root
       - MYSQL_DATABASE=cms
