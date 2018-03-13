@@ -3,13 +3,12 @@ default: &default
   # encoding: utf8
   reconnect: false
   pool: 100
-  username: root
-  password: slky@147
-  host: zgslky.com
+  username: user
+  password: ****
+  host: ****
 
 development:
   <<: *default
-  database: Liuge@188
 
 test:
   <<: *default
@@ -19,4 +18,4 @@ production:
   <<: *default
   host: 
   database: cms
-  password: slky@147
+  password: ****
