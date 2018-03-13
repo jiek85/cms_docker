@@ -1,4 +1,0 @@
----
-pid: 110
-control_url: unix:///var/www/one_cms/tmp/sockets/pumactl.sock
-control_auth_token: 2f69abe717a4874097fae62f3cb449d4
