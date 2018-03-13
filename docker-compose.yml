@@ -1,0 +1,75 @@
+version: "2"
+
+services:
+  mysql:
+    container_name: 'mysql'
+    image: mysql
+    environment:
+      # - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=slky@147
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=cms
+    volumes:
+      - ./data/mysql:/var/lib/mysql   
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    ports:
+      - '3306:3306'
+    restart: always
+
+  cms_web:
+    container_name: 'cms_web'
+    image: registry.cn-beijing.aliyuncs.com/fx/cms_web
+    links:
+      - app
+    command: /usr/bin/start-server
+    volumes_from:
+      - app
+    ports:
+      - "3300:3300"
+
+  cms_admin:
+    container_name: 'cms_admin'
+    image: registry.cn-beijing.aliyuncs.com/fx/cms_admin
+    links:
+      - app
+    volumes:
+      - /var/www/one_cms/public/manage
+    # command: /usr/bin/start-server
+    # volumes_from:
+    #   - app
+    # ports:
+    #   - "8085:8085"
+
+  nginx: 
+    container_name: 'nginx'
+    image: nginx:stable
+    links:
+      - app
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/one_cms.conf:/etc/nginx/sites-enabled/one_cms.conf
+    volumes_from:
+      - cms_admin
+    ports:
+      - '80:80'
+    restart: always 
+
+  app: &app_base
+    container_name: 'cms_api'
+    image: registry.cn-beijing.aliyuncs.com/fx/cms_api
+    links:
+      - mysql
+    volumes:
+      - ./config/database.yml:/var/www/one_cms/config/database.yml
+      - ./config/secrets.yml:/var/www/one_cms/config/secrets.yml
+      - ./config/puma.rb:/var/www/one_cms/config/puma.rb
+      - ./log:/var/www/log
+      - ./log:/var/www/one_cms/log
+      - ./tmp:/var/www/one_cms/tmp
+      - ./tmp/pids:/var/www/one_cms/tmp/pids
+      - ./tmp/sockets:/var/www/one_cms/tmp/sockets
+
+    command: /usr/bin/start-server
+    ports:
+      - "3000:3000"
